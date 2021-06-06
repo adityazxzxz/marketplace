@@ -19,42 +19,53 @@ exports.login = async (req,res,next) => {
                     message:'phone or password incorrect'
                 })
             }
-
-            let token = md5(req.body.phone + Date.now());
             
-            await user.findOneAndUpdate({phone:req.body.phone},{token:token},{new:true})
+            let otpExp = new Date().getTime() + (1*60*60*1000);
+            let doc = await user.findOneAndUpdate({phone:req.body.phone},{token:token,otp_expired:otpExp},{new:true})
 
             return res.status(200).json({
                 error:false,
                 message:'otp for next step',
                 data:{
-                    token,
-                    otp:data.otp
+                    phone:req.body.phone,
                 }
             })
-
-            let accessToken = jwt.sign({
-                id:data._id,
-                phone:data.phone
-            },'ass123Hole')
-
-            let
-
-
-
-
         })
+}
+
+exports.otp = async (req,res,next) => {
+    user.findOne({phone:req.body.phone,otp:req.body.otp}).then(data => {
+        if(!data){
+            return res.status(400).json({
+                error:true,
+                message:'otp failed'
+            })
+        }
+        let time = new Date.getTime();
+        if(data.otpExp > time){
+            return res.status(400).json({
+                error:true,
+                message:'otp expired'
+            })
+        }
+
+        return res.status(200).json({
+            error:false,
+            message:'access token'
+        })
+    })
 }
 
 exports.register = async (req,res,next) => {
     try {
+        let hash = bcrypt.hash(req.body.phone,8);
         let store = await user.create({
-            phone:'0812123123',
-            password:'123123'
+            phone:req.body.phone,
+            password:hash
         })
         return res.status(200).json({
             error:false,
-            message:'oke'
+            message:'succeed'
         })
     } catch (error) {
         console.log(error)
