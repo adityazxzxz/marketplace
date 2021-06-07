@@ -9,6 +9,9 @@ const userSchema = new schema({
     password:{
         type:String,
         required:true
+    },
+    otp_expired:{
+        type:Number
     }
 })
 
