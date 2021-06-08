@@ -13,6 +13,17 @@ const userSchema = new schema({
     },
     otp_code:{
         type:String
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
+    },
+    saldo:{
+        type:Number,
+        default:0
+    },
+    session:{
+        type:String
     }
 })
 
