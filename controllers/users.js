@@ -22,18 +22,21 @@ exports.login = async (req,res,next) => {
             }
             
             let otpExp = new Date().getTime() + (1*60*60*1000);
-            let doc = await user.findOneAndUpdate({phone:req.body.phone},{otp_expired:otpExp},{new:true})
+            let otpCode = Math.floor(100000 + Math.random() * 900000)
+            let newData = new user(data);
+
+            newData.otp_expired = otpExp;
+            newData.otp_code = otpCode;
+            newData.save();
 
             return res.status(200).json({
                 error:false,
                 message:'otp for next step',
                 data:{
                     phone:req.body.phone,
-                    id:data._id
                 }
             })
         }).catch(err => {
-            console.log(err)
             return res.status(500).json({
                 error:true,
                 message:'internal error'
@@ -42,20 +45,25 @@ exports.login = async (req,res,next) => {
 }
 
 exports.otp = async (req,res,next) => {
-    user.findOne({phone:req.body.phone,otp:req.body.otp}).then(data => {
+    user.findOne({phone:req.body.phone,otp_code:req.body.otp}).then(data => {
         if(!data){
             return res.status(400).json({
                 error:true,
                 message:'otp failed'
             })
         }
-        let time = new Date.getTime();
-        if(data.otpExp > time){
+        let time = new Date();
+        if(data.otp_expired < time.getTime()){
             return res.status(400).json({
                 error:true,
                 message:'otp expired'
             })
         }
+
+        let newData = new user(data)
+        
+        newData.otp_expired = time.getTime();
+        newData.save();
 
         let token = jwt.sign({
             id:data._id,
@@ -83,7 +91,9 @@ exports.register = async (req,res,next) => {
         }
         let store = await user.create({
             phone:req.body.phone,
-            password:hash
+            password:hash,
+            otp_code:null,
+            otp_expired:null,
         })
         return res.status(200).json({
             error:false,

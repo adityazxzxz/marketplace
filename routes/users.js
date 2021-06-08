@@ -6,6 +6,7 @@ const users = require('../controllers/users')
 router.post('/login',loginValidator(),validate,users.login)
 
 router.post('/register',users.register)
+router.post('/otp',users.otp)
 
 router.post('/',(req,res) => {
     res.status(200).json({data:'api create'})

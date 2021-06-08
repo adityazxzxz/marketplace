@@ -7,9 +7,16 @@ const loginValidator = () => {
     ]
 }
 
+const registerValidator = () => {
+    return [
+        body('phone').isMobilePhone,
+        body('password').isLength({min:5})
+        
+    ]
+}
+
 const validate = (req,res,next) => {
     const errors = validationResult(req)
-    console.log(errors)
     if(errors.isEmpty()){
         return next()
     }
@@ -23,6 +30,7 @@ const validate = (req,res,next) => {
         errors:extractedError
     })
 }
+
 
 module.exports = {
     validate,
