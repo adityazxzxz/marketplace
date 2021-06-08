@@ -12,7 +12,7 @@ const userSchema = new schema({
         type:Number
     },
     otp_code:{
-        type:Number
+        type:String
     }
 })
 

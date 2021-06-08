@@ -24,9 +24,10 @@ exports.login = async (req,res,next) => {
             let otpExp = new Date().getTime() + (1*60*60*1000);
             let otpCode = Math.floor(100000 + Math.random() * 900000)
             let newData = new user(data);
+            let otpHash = await bcrypt.hash(otpCode.toString(),8)
 
             newData.otp_expired = otpExp;
-            newData.otp_code = otpCode;
+            newData.otp_code = otpHash;
             newData.save();
 
             return res.status(200).json({
@@ -34,9 +35,11 @@ exports.login = async (req,res,next) => {
                 message:'otp for next step',
                 data:{
                     phone:req.body.phone,
+                    otp:otpCode
                 }
             })
         }).catch(err => {
+            console.log(err)
             return res.status(500).json({
                 error:true,
                 message:'internal error'
@@ -45,14 +48,21 @@ exports.login = async (req,res,next) => {
 }
 
 exports.otp = async (req,res,next) => {
-    user.findOne({phone:req.body.phone,otp_code:req.body.otp}).then(data => {
+    user.findOne({phone:req.body.phone}).then(data => {
         if(!data){
+            return res.status(400).json({
+                error:true,
+                message:'phone number not found'
+            })
+        }
+        let time = new Date();
+        let match = bcrypt.compare(req.body.otp,data.otp_code)
+        if(!match){
             return res.status(400).json({
                 error:true,
                 message:'otp failed'
             })
         }
-        let time = new Date();
         if(data.otp_expired < time.getTime()){
             return res.status(400).json({
                 error:true,
