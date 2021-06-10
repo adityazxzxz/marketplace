@@ -118,3 +118,15 @@ exports.register = async (req,res,next) => {
     }
     
 }
+
+exports.addCart = async (req,res,next) => {
+    user.findOne({phone:'081283398494'}).then(data => {
+        let userData = new user(data)
+        userData.cart.push({itemName:'botol3'});
+        userData.save()
+    })
+
+    return res.status(200).json({
+        error:false
+    })
+}

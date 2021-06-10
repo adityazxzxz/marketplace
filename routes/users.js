@@ -7,8 +7,9 @@ router.post('/login',loginValidator(),validate,users.login)
 
 router.post('/register',users.register)
 router.post('/otp',users.otp)
+router.get('/cart',users.addCart)
 
-router.post('/',(req,res) => {
+router.get('/',(req,res) => {
     res.status(200).json({data:'api create'})
 })
 
