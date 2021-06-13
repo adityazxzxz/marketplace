@@ -124,9 +124,37 @@ exports.addCart = async (req,res,next) => {
         let userData = new user(data)
         userData.cart.push({itemName:'botol3'});
         userData.save()
+        return res.status(200).json({
+            error:false,
+            message:'succeed'
+        })
+    }).catch(err => {
+        return res.status(500).json({
+            error:true,
+            message:'internal error'
+        })
     })
+}
 
-    return res.status(200).json({
-        error:false
+exports.removeCart = async (req,res,next) => {
+    user.update({
+        phone:req.userdata.phone
+    },
+    {
+        $pull:{
+            cart:{
+                _id:req.body.cartItemId
+            }
+        }
+    }).then(result => {
+        return res.status(200).json({
+            error:false,
+            message:'succeed'
+        })
+    }).catch(err => {
+        return res.status(500).json({
+            error:true,
+            message:'internal server error'
+        })
     })
 }
