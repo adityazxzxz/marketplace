@@ -41,14 +41,9 @@ const userSchema = new schema({
         type:String
     },
     cart:[{
-        itemId:{
-            type:String
-        },
-        itemName:{
-            type:String
-        },
-        price:{
-            type:Number
+        item:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Items'
         },
         qty:{
             type:Number
