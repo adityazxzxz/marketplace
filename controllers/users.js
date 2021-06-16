@@ -1,6 +1,7 @@
 const user = require('../models/users')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const users = require('../models/users')
 
 exports.login = async (req,res,next) => {
         user.findOne({
@@ -150,6 +151,24 @@ exports.removeCart = async (req,res,next) => {
         return res.status(200).json({
             error:false,
             message:'succeed'
+        })
+    }).catch(err => {
+        return res.status(500).json({
+            error:true,
+            message:'internal server error'
+        })
+    })
+}
+
+exports.getCart = (req,res,next) => {
+    let phone = req.userdata.phone;
+    user.findOne({
+        phone
+    }).then(data => {
+        let userdata = new user(data)
+        return res.status(200).json({
+            error:false,
+            data:userdata.cart
         })
     }).catch(err => {
         return res.status(500).json({
