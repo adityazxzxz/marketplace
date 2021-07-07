@@ -1,5 +1,8 @@
 const items = require('../models/items')
+
 exports.getItem = (req,res,next) => {
+    let limit = 20;
+    let page = req.query.page;
     items.find().then(data => {
         return res.status(200).json({
             error:false,
