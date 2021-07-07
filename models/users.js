@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const schema = mongoose.Schema;
 
 const userSchema = new schema({
@@ -41,9 +41,14 @@ const userSchema = new schema({
         type:String
     },
     cart:[{
-        item:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Items'
+        itemId:{
+            type:String
+        },
+        itemName:{
+            type:String
+        },
+        price:{
+            type:Number
         },
         qty:{
             type:Number
@@ -56,37 +61,10 @@ const userSchema = new schema({
         },
         updatedAt:{
             type:Date
+        },
+        note:{
+            type:String
         }
-    }],
-    alamat:[{
-        label:{
-            type:String
-        },
-        no_hp:{
-            type:String
-        },
-        penerima:{
-            type:String
-        },
-        kota:{
-            type:String
-        },
-        kecamatan:{
-            type:String
-        },
-        kode_pos:{
-            type:Number
-        },
-        alamat:{
-            type:String
-        },
-        createdAt:{
-            type:Date
-        },
-        updatedAt:{
-            type:Date
-        }
-
     }]
 })
 

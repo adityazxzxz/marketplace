@@ -1,30 +1,55 @@
-const mongoose = require('mongoose')
-const schema = mongoose.Schema;
+const items = require('../models/items')
+exports.getItem = (req,res,next) => {
+    items.find().then(data => {
+        return res.status(200).json({
+            error:false,
+            data
+        })
+    }).catch(err => {
+        return res.status(500).json({
+            error:true,
+            message:'internal server error'
+        })
+    })
+}
 
-const itemsSchema = new schema({
-    merchantId:{
-        type:String
-    },
-    itemName:{
-        type:String
-    },
-    price:{
-        type:Number
-    },
-    qty:{
-        type:Number
-    },
-    description:{
-        type:String
-    },
-    createdAt:{
-        type:Date,
-        default:Date.now
-    },
-    updatedAt:{
-        type:Date
+exports.add = async (req,res,next) => {
+    try {
+        await items.create({
+            merchantId:req.body.merchantid,
+            itemName:req.body.itemname,
+            price:req.body.price,
+            qty:req.body.qty,
+            description:req.body.description,
+            image:[{
+                title:'tes',
+                url:'urltes'
+            }]
+        })
+
+        return res.status(200).json({
+            error:false,
+            message:'Succeed'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error:true,
+            message:'internal error server'
+        })
     }
+}
 
-})
-
-module.exports = Item = mongoose.model("items",itemsSchema)
+exports.detail = (req,res,next) => {
+    items.findOne({_id:req.body.id}).then(data => {
+        return res.status(200).json({
+            error:false,
+            data
+        })
+    }).catch(err => {
+        return res.status(500).json({
+            error:true,
+            message:'internal server error'
+        })
+    })
+}

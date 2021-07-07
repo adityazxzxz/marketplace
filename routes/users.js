@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {validate, loginValidator} = require('../helpers/validator')
+const {validate, loginValidator} = require('../middleware/validator')
 const users = require('../controllers/users')
 
 router.post('/login',loginValidator(),validate,users.login)

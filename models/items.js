@@ -23,7 +23,34 @@ const itemsSchema = new schema({
     },
     updatedAt:{
         type:Date
-    }
+    },
+    rating:[{
+        userId:{
+            type:String
+        },
+        rate:{
+            type:Number
+        },
+        comment:{
+            type:String,
+            default:null
+        },
+        createdAt:{
+            type:Date
+        }
+    }],
+    image:[{
+        title:{
+            type:String
+        },
+        url:{
+            type:String
+        },
+        createdAt:{
+            type:Date
+        }
+    }]
+
 
 })
 
