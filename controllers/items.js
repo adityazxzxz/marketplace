@@ -1,19 +1,21 @@
 const items = require('../models/items')
 
-exports.getItem = (req,res,next) => {
-    let limit = 20;
-    let page = req.query.page;
-    items.find().then(data => {
+exports.getItem = async (req,res,next) => {
+    let limit = 5;
+    let offset = req.query.page ? req.query.page * limit : 1;
+    try {
+        let item = await items.find().limit(limit).skip(offset);
         return res.status(200).json({
             error:false,
-            data
+            data:item,
         })
-    }).catch(err => {
+    } catch (error) {
+        console.log(error)
         return res.status(500).json({
             error:true,
-            message:'internal server error'
+            message:'internal error server'
         })
-    })
+    }
 }
 
 exports.add = async (req,res,next) => {
