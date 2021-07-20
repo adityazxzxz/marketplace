@@ -1,10 +1,11 @@
 const items = require('../models/items')
 
 exports.getItem = async (req,res,next) => {
-    let limit = 5;
+    let limit = 10;
     let offset = req.query.page ? req.query.page * limit : 1;
+    let cond = req.query.search ? {"itemName":{$regex:req.query.search}} : {}
     try {
-        let item = await items.find().limit(limit).skip(offset);
+        let item = await items.find(cond).limit(limit).skip(offset);
         return res.status(200).json({
             error:false,
             data:item,
